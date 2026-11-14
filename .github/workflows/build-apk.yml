@@ -24,8 +24,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Configurar Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Configurar Android SDK pré-instalado
+        run: |
+          SDK_DIR="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "sdk.dir=$SDK_DIR" > android-tv/local.properties
+          SDKM=$(find "$SDK_DIR/cmdline-tools" -name sdkmanager -type f 2>/dev/null | head -n 1)
+          if [ -n "$SDKM" ]; then
+            yes | "$SDKM" --licenses >/dev/null 2>&1 || true
+          fi
 
       - name: Configurar Gradle 8.7
         uses: gradle/actions/setup-gradle@v4
