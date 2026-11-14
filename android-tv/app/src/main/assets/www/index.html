@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>XTV Lite TV</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0d1015;color:#f3f4f6;font-family:sans-serif;padding:24px}
+  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #1f2937;padding-bottom:12px}
+  h1{font-size:20px;color:#22c55e}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-top:16px}
+  .card{background:#151921;border:2px solid #262b36;border-radius:10px;padding:14px;cursor:pointer;color:#fff;text-align:left}
+  .card:focus,.card:hover{border-color:#22c55e;outline:none;background:#1b212c}
+  .cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;background:#151921;padding:16px;border-radius:10px;border:1px solid #262b36;margin-bottom:20px}
+  label{display:block;font-size:12px;color:#9ca3af;margin-bottom:4px}
+  select,button{width:100%;padding:8px 10px;border-radius:6px;border:1px solid #374151;background:#0d1015;color:#fff}
+  button.primary{background:#16a34a;border-color:#16a34a;font-weight:700;margin-top:10px;cursor:pointer}
+</style>
+</head>
+<body>
+  <header>
+    <h1>XTV Lite — Android TV (1GB RAM)</h1>
+    <span style="font-size:12px;color:#9ca3af">Native MediaCodec / WebView</span>
+  </header>
+
+  <section class="cfg">
+    <div>
+      <label>Motor de Renderização</label>
+      <select id="engine">
+        <option value="native" selected>Native (WebRTC + MediaCodec)</option>
+        <option value="webview">WebView (xbox.com/play)</option>
+      </select>
+    </div>
+    <div>
+      <label>Decodificador de Hardware</label>
+      <select id="decoder">
+        <option value="surface_decoder" selected>Saída direta MediaCodec (SurfaceDecoder)</option>
+        <option value="fast_decoder">Baixa latência própria (FastDecoder)</option>
+        <option value="compatible">Compatível (WebRTC Padrão)</option>
+      </select>
+    </div>
+    <div>
+      <label>Resolução / Bitrate</label>
+      <select id="resolution">
+        <option value="540p">540p Ultra Lite (1GB RAM)</option>
+        <option value="720p" selected>720p HD (Recomendado)</option>
+        <option value="1080p">1080p Full HD</option>
+      </select>
+    </div>
+    <div>
+      <label>Codec &amp; Estatísticas</label>
+      <select id="codec">
+        <option value="h264_low" selected>H.264 Baixa Latência</option>
+        <option value="hevc">H.265 / HEVC</option>
+        <option value="vp9">VP9</option>
+      </select>
+    </div>
+  </section>
+
+  <h2 style="font-size:16px">Jogos xCloud</h2>
+  <div class="grid" id="games"></div>
+
+  <script>
+    const games = [
+      {title:"Starfield",id:"9NCJSXWZTP88"},
+      {title:"Forza Horizon 5",id:"9NNX1VVR3KNQ"},
+      {title:"Halo Infinite",id:"9PP5G1F0C2B6"},
+      {title:"Fortnite",id:"BT5P2X999VH2"},
+      {title:"Minecraft Legends",id:"9N3B3S8G2L09"},
+      {title:"GTA / Action",id:"BX3M8L83BBRW"}
+    ];
+    const root = document.getElementById("games");
+    games.forEach(g => {
+      const btn = document.createElement("button");
+      btn.className = "card";
+      btn.innerHTML = "<strong>" + g.title + "</strong><div style='font-size:12px;color:#9ca3af;margin-top:4px'>ID: " + g.id + "</div>";
+      btn.onclick = () => {
+        if (window.XtvNative) {
+          window.XtvNative.launchGame(
+            g.title,
+            g.id,
+            document.getElementById("engine").value,
+            document.getElementById("decoder").value,
+            true,
+            document.getElementById("resolution").value,
+            8,
+            document.getElementById("codec").value,
+            "brazilsouth"
+          );
+        }
+      };
+      root.appendChild(btn);
+    });
+  </script>
+</body>
+</html>
